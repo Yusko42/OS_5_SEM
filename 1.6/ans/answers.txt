@@ -1,0 +1,17 @@
+- _Atomic vs volatile
+
+Volatile - directive to prevent optimizations for variables that can change unexpectedly
+         - its value can be read or modified asynchronously by something other than the current thread of execution.
+         - may spontaneously change for reasons 
+
+In C, the volatile keyword was intended to:
+    - Allow access to memory-mapped I/O devices.
+    - Allow preserving values across a longjmp.
+    - Allow sharing values between signal handlers and the rest of the program in volatile sig_atomic_t objects.
+
+NOTE: operations on volatile variables in C are NOT atomic
+
+
+ATOMIC - provides thread-safe operations and memory guarantees for concurrent programming
+       - Ensures operations on a variable are indivisible (atomic) and thread-safe.
+
