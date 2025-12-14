@@ -1,17 +1,26 @@
-- _Atomic vs volatile
+- Почему фьютекс как примитив?
 
-Volatile - directive to prevent optimizations for variables that can change unexpectedly
-         - its value can be read or modified asynchronously by something other than the current thread of execution.
-         - may spontaneously change for reasons 
+futex - примитив, позволяющий потокам одного процесса синхронизироваться в user space без тяжёлых системных вызовов ядра.
+    если условие уже выполнено: не вызывается ядро, просто обычная проверка переменной
+    если ждать:                 syscall futex(FUTEX_WAIT)
+А также реализации других средств - в pthread.
 
-In C, the volatile keyword was intended to:
-    - Allow access to memory-mapped I/O devices.
-    - Allow preserving values across a longjmp.
-    - Allow sharing values between signal handlers and the rest of the program in volatile sig_atomic_t objects.
+Состоит из двух компонентов:
+    1) Атомарная переменная в пользовательской памяти (futex-word), обычно int. 
+        Её значение интерпретируется алгоритмом синхронизации 
+        (например: 0 — свободно, 1 — захвачено, 2 — захвачено и есть ждущие потоки).
+    2) Системные вызовы ядра futex() (futex_wait(), futex_wake(), и др.), которые используются, 
+        только когда нужно блокировать поток или разбудить другой.
 
-NOTE: operations on volatile variables in C are NOT atomic
+Неудача (значение уже было 1, мьютекс занят):
+    Поток устанавливает значение в 2 (флаг "мьютекс занят, и есть ждущие").
+    Вызывает системный вызов futex_wait(futex_word, 2). 
+        Ядро проверяет: если значение всё ещё 2, поток блокируется. 
+        Если значение изменилось (например, мьютекс освободили), вызов возвращается сразу.
 
-
-ATOMIC - provides thread-safe operations and memory guarantees for concurrent programming
-       - Ensures operations on a variable are indivisible (atomic) and thread-safe.
-
+Освобождение мьютекса (unlock):
+    - Поток атомарно уменьшает значение с 1 до 0 (или с 2 до 1) в пользовательском пространстве.
+    - Если новое значение 0 — всё готово. 
+    - Если новое значение 1, поток вызывает futex_wake(futex_word, 1). 
+        Этот вызов просит ядро разбудить один случайный поток, ждущий на этом futex-слове. 
+        Поток, который проснётся, попытается снова захватить мьютекс.
