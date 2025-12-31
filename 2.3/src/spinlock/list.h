@@ -1,12 +1,13 @@
 #ifndef LIST_H
 #define LIST_H
 
+#define _GNU_SOURCE
 #include <pthread.h>
 
 typedef struct _Node {
     char            value[100];
     struct _Node*   next;
-    pthread_mutex_t sync;
+    pthread_spinlock_t sync;
 } Node;
 
 typedef struct _Storage {

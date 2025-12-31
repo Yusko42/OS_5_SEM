@@ -31,7 +31,7 @@ Storage* storage_init(int n) {
     // First node init
     first->value[0] = '\0';
     first->next = NULL;
-    pthread_mutex_init(&first->sync, NULL);
+    pthread_rwlock_init(&first->sync, NULL);
 
     // Storage list init
     s->first = first;
@@ -46,9 +46,9 @@ Storage* storage_init(int n) {
             return NULL;
         }
         // New node init 
-        generate_gandom_string(cur->value);
+        generate_gandom_string(cur->value); 
         cur->next = NULL;
-        pthread_mutex_init(&cur->sync, NULL);
+        pthread_rwlock_init(&cur->sync, NULL);
 
         // Next step
         prev->next = cur;
@@ -61,7 +61,7 @@ void storage_destroy(Storage* s) {
     if (!s) return;
 
 	while (s->first != NULL) {
-        pthread_mutex_destroy(&s->first->sync);
+        pthread_rwlock_destroy(&s->first->sync);
 		Node* tmp = s->first->next;
 		free(s->first);
 		s->first = tmp; 

@@ -1,25 +1,19 @@
+
+#include <stdlib.h>
 #include <stdatomic.h>
+#include <string.h>
+#include "threads.h"
 #include "list.h"
 
-// Atomic counters
-static atomic_long iterations_asc = 0;
-static atomic_long iterations_desc = 0;
-static atomic_long iterations_equal = 0;
-
-static atomic_long pairs_asc = 0;
-static atomic_long pairs_desc = 0;
-static atomic_long pairs_equal = 0;
-
-static atomic_long swap_asc = 0;
-static atomic_long swap_desc = 0;
-static atomic_long swap_not_equal = 0;
+atomic_int is_running = 1;
 
 /* Main function for reading threads */
 
-static void search_pairs(Storage* s, int (*cmp)(int, int), atomic_long* global_counter, atomic_long* pairs_counter) {
+/*static void search_pairs(Storage* s, int (*cmp)(int, int), atomic_long* global_counter, atomic_long* pairs_counter) {
     // One iteration of list traversal per cycle
-    while(1) {
+    while(atomic_load(&is_running)) {
         Node* first = s->first;
+        if (!first) return; // или continue в бесконечном цикле
         Node* a;
         Node* b;
 
@@ -29,7 +23,7 @@ static void search_pairs(Storage* s, int (*cmp)(int, int), atomic_long* global_c
         // One node in the storage
         if (!a) {
             pthread_mutex_unlock(&first->sync);
-            atomic_fetch_add(pairs_counter, 1);
+            atomic_fetch_add(global_counter, 1);
             continue;
         }
 
@@ -37,10 +31,12 @@ static void search_pairs(Storage* s, int (*cmp)(int, int), atomic_long* global_c
         pthread_mutex_lock(&a->sync);
         pthread_mutex_unlock(&first->sync);
 
-        while(1) {
+        while(a) {
             b = a->next;
-            if (!b)
+            if (!b) {
+                pthread_mutex_unlock(&a->sync);
                 break;
+            }
             pthread_mutex_lock(&b->sync);
 
             int len_a = (int)strlen(a->value);
@@ -51,35 +47,37 @@ static void search_pairs(Storage* s, int (*cmp)(int, int), atomic_long* global_c
             pthread_mutex_unlock(&a->sync);
             a = b; // next step
         }
-        pthread_mutex_unlock(&b->sync);
-        atomic_fetch_add(pairs_counter, 1);
+        //pthread_mutex_unlock(&a->sync);
+        atomic_fetch_add(global_counter, 1);
     }
 }
 
-static int cmr_asc(int len_1, int len_2) { return len_1 < len_2; }
-static int cmr_desc(int len_1, int len_2) { return len_1 > len_2; }
-static int cmr_equal(int len_1, int len_2) { return len_1 == len_2; }
+static int cmp_asc(int len_1, int len_2) { return len_1 < len_2; }
+static int cmp_desc(int len_1, int len_2) { return len_1 > len_2; }
+static int cmp_equal(int len_1, int len_2) { return len_1 == len_2; }
 static int cmp_not_equal(int len_1, int len_2) { // for swapper thread
-    if (len_1 != len_2) return rand() % 2 == 0; 
+    //unsigned int seed = (unsigned int)time(NULL);
+    return len_1 != len_2; // return (rand_r(&seed) % 2 == 0); 
+                           //return 0;
 }
-
+*/
 /* Reading treads (find pairs) */
 
-void* pair_searcher_asc(void* arg){
+/*void* pair_searcher_asc(void* arg){
     Storage* s = (Storage*)arg;
-    search_pairs(s, cmp_asc(), &iterations_asc, &pairs_asc);
+    search_pairs(s, cmp_asc, &iterations_asc, &pairs_asc);
     return NULL;
 }
 
 void* pair_searcher_desc(void* arg){
     Storage* s = (Storage*)arg;
-    search_pairs(s, cmp_desc(), &iterations_desc, &pairs_desc);
+    search_pairs(s, cmp_desc, &iterations_desc, &pairs_desc);
     return NULL;
 }
 
 void* pair_searcher_equal(void* arg){
     Storage* s = (Storage*)arg;
-    search_pairs(s, cmp_equal(), &iterations_equal, &pairs_equal);
+    search_pairs(s, cmp_not_equal, &iterations_equal, &pairs_equal);
     return NULL;
 }
 
@@ -88,25 +86,29 @@ void swap_nodes(Node* prev, Node* node_left, Node* node_right) {
     prev->next = node_right;
     node_left->next = node_right->next;
     node_right->next = node_left;
-}
+}*/
 
 /* Main function for swapping threads */
 // Высчитываем индекс, шагаем туда, меняем? 
-static void swap_pairs(Storage* s, int (*cmp)(int, int), atomic_long* swap_counter) {
-    if (s->size < 2)    return NULL;
+/*static void swap_pairs(Storage* s, int (*cmp)(int, int), atomic_long* swap_counter) {
+    if (s->size < 2)    return;
 
     // случайный индекс
     unsigned int seed = (unsigned int)time(NULL) ^ (unsigned int)pthread_self();
     int max_index = s->size - 1;
-    int left_index = rand_s(&seed) % max_index;
+    int left_index = rand_r(&seed) % max_index;
 
     Node* prev = s->first;
-    pthread_mutex_lock(&prev->sync);
-    if (!prev)          return NULL;
-    
-    Node* cur = prev->next;
-    if (!cur)              return NULL;
+    if (!prev)          return;
 
+    pthread_mutex_lock(&prev->sync);
+    Node* cur = prev->next;
+    if (!cur) {
+        pthread_mutex_unlock(&prev->sync);
+        return;
+    }
+
+    pthread_mutex_lock(&cur->sync);
     // движемся по списку к левой ноде (cur = lft, next = right)
     for (int i = 0; i < left_index; i++){
         Node* next = cur->next;
@@ -122,7 +124,7 @@ static void swap_pairs(Storage* s, int (*cmp)(int, int), atomic_long* swap_count
     if (!next) {
         pthread_mutex_unlock(&cur->sync);
         pthread_mutex_unlock(&prev->sync);
-        return NULL;
+        return;
     }
 
     // Дошли: применяем алгоритм
@@ -137,30 +139,35 @@ static void swap_pairs(Storage* s, int (*cmp)(int, int), atomic_long* swap_count
     pthread_mutex_unlock(&next->sync);
     pthread_mutex_unlock(&cur->sync);
     pthread_mutex_unlock(&prev->sync);
-}
+}*/
 
 /* Swap threads */
 
-void* swapper_asc(void* arg){
+/*void* swapper_asc(void* arg){
     Storage* s = (Storage*)arg;
-    while(1) {
-        swap_pairs(s, cmp_asc(), swap_asc);
+    while(atomic_load(&is_running)) {
+        swap_pairs(s, cmp_asc, &swap_asc);
     }
     return NULL;
 }
 
 void* swapper_desc(void* arg){
     Storage* s = (Storage*)arg;
-    while(1) {
-        swap_pairs(s, cmp_desc(), swap_desc);
+    while(atomic_load(&is_running)) {
+        swap_pairs(s, cmp_desc, &swap_desc);
     }
     return NULL;
 }
 
 void* swapper_not_eql(void* arg){
     Storage* s = (Storage*)arg;
-    while(1) {
-        swap_pairs(s, cmp_not_equal(), swap_not_equal);
+    while(atomic_load(&is_running)) {
+        swap_pairs(s, cmp_not_equal, &swap_not_equal);
     }
     return NULL;
 }
+
+void stop() {
+    atomic_store(&is_running, 0);
+}
+*/

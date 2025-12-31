@@ -33,37 +33,36 @@ static void search_pairs(Storage* s, int (*cmp)(int, int), atomic_long* global_c
         Node* a;
         Node* b;
 
-        pthread_mutex_lock(&first->sync);
+        pthread_rwlock_rdlock(&first->sync);
         a = first->next;
 
         // One node in the storage
         if (!a) {
-            pthread_mutex_unlock(&first->sync);
+            pthread_rwlock_unlock(&first->sync);
             atomic_fetch_add(global_counter, 1);
             continue;
         }
 
         // If we do have 'a', the go to the next node 
-        pthread_mutex_lock(&a->sync);
-        pthread_mutex_unlock(&first->sync);
+        pthread_rwlock_rdlock(&a->sync);
+        pthread_rwlock_unlock(&first->sync);
 
         while(a) {
             b = a->next;
             if (!b) {
-                pthread_mutex_unlock(&a->sync);
+                pthread_rwlock_unlock(&a->sync);
                 break;
             }
-            pthread_mutex_lock(&b->sync);
+            pthread_rwlock_rdlock(&b->sync);
 
             int len_a = (int)strlen(a->value);
             int len_b = (int)strlen(b->value);
             if (cmp(len_a, len_b))
                 atomic_fetch_add(pairs_counter, 1);
             
-            pthread_mutex_unlock(&a->sync);
+            pthread_rwlock_unlock(&a->sync);
             a = b; // next step
         }
-        //pthread_mutex_unlock(&a->sync);
         atomic_fetch_add(global_counter, 1);
     }
 }
@@ -120,20 +119,20 @@ static void swap_pairs(Storage* s, int (*cmp)(int, int), atomic_long* swap_count
     Node* prev = s->first;
     if (!prev)          return;
 
-    pthread_mutex_lock(&prev->sync);
+    pthread_rwlock_wrlock(&prev->sync);
     Node* cur = prev->next;
     if (!cur) {
-        pthread_mutex_unlock(&prev->sync);
+        pthread_rwlock_unlock(&prev->sync);
         return;
     }
 
-    pthread_mutex_lock(&cur->sync);
+    pthread_rwlock_wrlock(&cur->sync);
     // движемся по списку к левой ноде (cur = lft, next = right)
     for (int i = 0; i < left_index; i++){
         Node* next = cur->next;
         if (!next)          break;
-        pthread_mutex_lock(&next->sync);
-        pthread_mutex_unlock(&prev->sync);
+        pthread_rwlock_wrlock(&next->sync);
+        pthread_rwlock_unlock(&prev->sync);
 
         prev = cur;
         cur = next;
@@ -141,13 +140,13 @@ static void swap_pairs(Storage* s, int (*cmp)(int, int), atomic_long* swap_count
 
     Node* next = cur->next;
     if (!next) {
-        pthread_mutex_unlock(&cur->sync);
-        pthread_mutex_unlock(&prev->sync);
+        pthread_rwlock_unlock(&cur->sync);
+        pthread_rwlock_unlock(&prev->sync);
         return;
     }
 
     // Дошли: применяем алгоритм
-    pthread_mutex_lock(&next->sync);
+    pthread_rwlock_wrlock(&next->sync);
     int len_left = strlen(cur->value);
     int len_right = strlen(next->value);
 
@@ -155,9 +154,9 @@ static void swap_pairs(Storage* s, int (*cmp)(int, int), atomic_long* swap_count
         swap_nodes(prev, cur, next);
         atomic_fetch_add(swap_counter, 1);
     }
-    pthread_mutex_unlock(&next->sync);
-    pthread_mutex_unlock(&cur->sync);
-    pthread_mutex_unlock(&prev->sync);
+    pthread_rwlock_unlock(&next->sync);
+    pthread_rwlock_unlock(&cur->sync);
+    pthread_rwlock_unlock(&prev->sync);
 }
 
 /* Swap threads */
@@ -229,7 +228,7 @@ int main(int argc, char **argv) {
     pthread_join(pswapper_desc, NULL);
     pthread_join(pswapper_not_eql, NULL);
 
-    printf("Mutex size: %d, 10 s\n", storage_size);
+    printf("RWLOCK: size: %d, 10 s\n", storage_size);
     printf("iterations_asc:  %lu, pairs_asc:  %lu, swap_asc: %lu\n", iterations_asc, pairs_asc, swap_asc);
     printf("iterations_desc: %lu, pairs_desc: %lu, swap_desc: %lu\n", iterations_desc, pairs_desc, swap_desc);
     printf("iterations_eql:  %lu, pairs_eql:  %lu, swap_not_equal: %lu\n", iterations_equal, pairs_equal, swap_not_equal);
