@@ -1,0 +1,163 @@
+SPINLOCK: size: 1000, 1 s
+iterations_asc:  15323, pairs_asc:  6574496, swap_asc: 18850
+iterations_desc: 15354, pairs_desc: 6583414, swap_desc: 19028
+iterations_eql:  15322, pairs_eql:  2162895, swap_not_equal: 38144
+SPINLOCK: size: 1000, 2 s
+iterations_asc:  33389, pairs_asc:  14322261, swap_asc: 41110
+iterations_desc: 33444, pairs_desc: 14347184, swap_desc: 41179
+iterations_eql:  33398, pairs_eql:  4710816, swap_not_equal: 82616
+SPINLOCK: size: 1000, 3 s
+iterations_asc:  51396, pairs_asc:  22041740, swap_asc: 63448
+iterations_desc: 51476, pairs_desc: 22076369, swap_desc: 63116
+iterations_eql:  51423, pairs_eql:  7264659, swap_not_equal: 127106
+SPINLOCK: size: 1000, 4 s
+iterations_asc:  69718, pairs_asc:  29929137, swap_asc: 85877
+iterations_desc: 69813, pairs_desc: 29921293, swap_desc: 85280
+iterations_eql:  69759, pairs_eql:  9844463, swap_not_equal: 171971
+SPINLOCK: size: 1000, 5 s
+iterations_asc:  88067, pairs_asc:  37807332, swap_asc: 108891
+iterations_desc: 88178, pairs_desc: 37840313, swap_desc: 107414
+iterations_eql:  88107, pairs_eql:  12384564, swap_not_equal: 216922
+SPINLOCK: size: 1000, 6 s
+iterations_asc:  106352, pairs_asc:  45687763, swap_asc: 131750
+iterations_desc: 106484, pairs_desc: 45679406, swap_desc: 129799
+iterations_eql:  106405, pairs_eql:  14942339, swap_not_equal: 261793
+SPINLOCK: size: 1000, 7 s
+iterations_asc:  124627, pairs_asc:  53560546, swap_asc: 154833
+iterations_desc: 124792, pairs_desc: 53555060, swap_desc: 151975
+iterations_eql:  124699, pairs_eql:  17467384, swap_not_equal: 306679
+SPINLOCK: size: 1000, 8 s
+iterations_asc:  141790, pairs_asc:  60943374, swap_asc: 177001
+iterations_desc: 141926, pairs_desc: 60869491, swap_desc: 173498
+iterations_eql:  141861, pairs_eql:  19903291, swap_not_equal: 350247
+SPINLOCK: size: 1000, 9 s
+iterations_asc:  159829, pairs_asc:  68690044, swap_asc: 199766
+iterations_desc: 159920, pairs_desc: 68616031, swap_desc: 195639
+iterations_eql:  159869, pairs_eql:  22407228, swap_not_equal: 395360
+SPINLOCK: size: 1000, 10 s
+iterations_asc:  177669, pairs_asc:  76316763, swap_asc: 222481
+iterations_desc: 177720, pairs_desc: 76229281, swap_desc: 217571
+iterations_eql:  177690, pairs_eql:  24969464, swap_not_equal: 440018
+
+SPINLOCK: size: 10000, 1 s
+iterations_asc:  1246, pairs_asc:  5313356, swap_asc: 2104
+iterations_desc: 1245, pairs_desc: 5349379, swap_desc: 2208
+iterations_eql:  1248, pairs_eql:  1794642, swap_not_equal: 4193
+SPINLOCK: size: 10000, 2 s
+iterations_asc:  2744, pairs_asc:  11690359, swap_asc: 4513
+iterations_desc: 2744, pairs_desc: 11815119, swap_desc: 4595
+iterations_eql:  2750, pairs_eql:  3940349, swap_not_equal: 9041
+SPINLOCK: size: 10000, 3 s
+iterations_asc:  4361, pairs_asc:  18611594, swap_asc: 6438
+iterations_desc: 4361, pairs_desc: 18780813, swap_desc: 6602
+iterations_eql:  4366, pairs_eql:  6220391, swap_not_equal: 12659
+SPINLOCK: size: 10000, 4 s
+iterations_asc:  6301, pairs_asc:  26866282, swap_asc: 8619
+iterations_desc: 6301, pairs_desc: 27141651, swap_desc: 8933
+iterations_eql:  6307, pairs_eql:  9004353, swap_not_equal: 17005
+SPINLOCK: size: 10000, 5 s
+iterations_asc:  8220, pairs_asc:  35071672, swap_asc: 10751
+iterations_desc: 8219, pairs_desc: 35385213, swap_desc: 11251
+iterations_eql:  8225, pairs_eql:  11737753, swap_not_equal: 21454
+SPINLOCK: size: 10000, 6 s
+iterations_asc:  10159, pairs_asc:  43317393, swap_asc: 12904
+iterations_desc: 10159, pairs_desc: 43772219, swap_desc: 13497
+iterations_eql:  10165, pairs_eql:  14498774, swap_not_equal: 25812
+SPINLOCK: size: 10000, 7 s
+iterations_asc:  12095, pairs_asc:  51574374, swap_asc: 15140
+iterations_desc: 12095, pairs_desc: 52132823, swap_desc: 15746
+iterations_eql:  12101, pairs_eql:  17239288, swap_not_equal: 30113
+SPINLOCK: size: 10000, 8 s
+iterations_asc:  14054, pairs_asc:  59992156, swap_asc: 17381
+iterations_desc: 14054, pairs_desc: 60522316, swap_desc: 18095
+iterations_eql:  14059, pairs_eql:  20018638, swap_not_equal: 34578
+SPINLOCK: size: 10000, 9 s
+iterations_asc:  15999, pairs_asc:  68370030, swap_asc: 19559
+iterations_desc: 15999, pairs_desc: 68868306, swap_desc: 20426
+iterations_eql:  16005, pairs_eql:  22744187, swap_not_equal: 38963
+SPINLOCK: size: 10000, 10 s
+iterations_asc:  17963, pairs_asc:  76806952, swap_asc: 21691
+iterations_desc: 17963, pairs_desc: 77289691, swap_desc: 22760
+iterations_eql:  17969, pairs_eql:  25523916, swap_not_equal: 43488
+
+SPINLOCK: size: 100000, 1 s
+iterations_asc:  193, pairs_asc:  8283026, swap_asc: 238
+iterations_desc: 193, pairs_desc: 8289227, swap_desc: 224
+iterations_eql:  194, pairs_eql:  2741672, swap_not_equal: 458
+SPINLOCK: size: 100000, 2 s
+iterations_asc:  391, pairs_asc:  16787777, swap_asc: 465
+iterations_desc: 390, pairs_desc: 16743788, swap_desc: 451
+iterations_eql:  391, pairs_eql:  5525122, swap_not_equal: 886
+SPINLOCK: size: 100000, 3 s
+iterations_asc:  583, pairs_asc:  25033046, swap_asc: 712
+iterations_desc: 581, pairs_desc: 24945071, swap_desc: 683
+iterations_eql:  584, pairs_eql:  8249543, swap_not_equal: 1310
+SPINLOCK: size: 100000, 4 s
+iterations_asc:  775, pairs_asc:  33280491, swap_asc: 942
+iterations_desc: 772, pairs_desc: 33145711, swap_desc: 909
+iterations_eql:  776, pairs_eql:  10958323, swap_not_equal: 1770
+SPINLOCK: size: 100000, 5 s
+iterations_asc:  964, pairs_asc:  41399612, swap_asc: 1180
+iterations_desc: 961, pairs_desc: 41257061, swap_desc: 1134
+iterations_eql:  966, pairs_eql:  13641816, swap_not_equal: 2208
+SPINLOCK: size: 100000, 6 s
+iterations_asc:  1148, pairs_asc:  49305025, swap_asc: 1424
+iterations_desc: 1144, pairs_desc: 49108134, swap_desc: 1364
+iterations_eql:  1151, pairs_eql:  16256381, swap_not_equal: 2675
+SPINLOCK: size: 100000, 7 s
+iterations_asc:  1332, pairs_asc:  57210338, swap_asc: 1668
+iterations_desc: 1325, pairs_desc: 56869079, swap_desc: 1600
+iterations_eql:  1332, pairs_eql:  18818827, swap_not_equal: 3132
+SPINLOCK: size: 100000, 8 s
+iterations_asc:  1532, pairs_asc:  65799972, swap_asc: 1927
+iterations_desc: 1523, pairs_desc: 65359503, swap_desc: 1842
+iterations_eql:  1530, pairs_eql:  21624503, swap_not_equal: 3628
+SPINLOCK: size: 100000, 9 s
+iterations_asc:  1721, pairs_asc:  73917538, swap_asc: 2179
+iterations_desc: 1711, pairs_desc: 73418829, swap_desc: 2066
+iterations_eql:  1717, pairs_eql:  24276204, swap_not_equal: 4116
+SPINLOCK: size: 100000, 10 s
+iterations_asc:  1880, pairs_asc:  80746830, swap_asc: 2395
+iterations_desc: 1871, pairs_desc: 80279059, swap_desc: 2250
+iterations_eql:  1878, pairs_eql:  26557732, swap_not_equal: 4487
+
+SPINLOCK: size: 1000000, 1 s
+iterations_asc:  17, pairs_asc:  7281683, swap_asc: 20
+iterations_desc: 15, pairs_desc: 6433724, swap_desc: 19
+iterations_eql:  16, pairs_eql:  2284003, swap_not_equal: 46
+SPINLOCK: size: 1000000, 2 s
+iterations_asc:  33, pairs_asc:  14135090, swap_asc: 42
+iterations_desc: 31, pairs_desc: 13296269, swap_desc: 33
+iterations_eql:  32, pairs_eql:  4568022, swap_not_equal: 92
+SPINLOCK: size: 1000000, 3 s
+iterations_asc:  48, pairs_asc:  20560088, swap_asc: 56
+iterations_desc: 47, pairs_desc: 20158942, swap_desc: 54
+iterations_eql:  48, pairs_eql:  6852003, swap_not_equal: 139
+SPINLOCK: size: 1000000, 4 s
+iterations_asc:  62, pairs_asc:  26556700, swap_asc: 71
+iterations_desc: 60, pairs_desc: 25734959, swap_desc: 80
+iterations_eql:  62, pairs_eql:  8850436, swap_not_equal: 184
+SPINLOCK: size: 1000000, 5 s
+iterations_asc:  78, pairs_asc:  33409949, swap_asc: 93
+iterations_desc: 79, pairs_desc: 33884585, swap_desc: 106
+iterations_eql:  80, pairs_eql:  11419818, swap_not_equal: 229
+SPINLOCK: size: 1000000, 6 s
+iterations_asc:  94, pairs_asc:  40263177, swap_asc: 109
+iterations_desc: 95, pairs_desc: 40747499, swap_desc: 126
+iterations_eql:  98, pairs_eql:  13989138, swap_not_equal: 266
+SPINLOCK: size: 1000000, 7 s
+iterations_asc:  111, pairs_asc:  47544591, swap_asc: 129
+iterations_desc: 110, pairs_desc: 47181581, swap_desc: 144
+iterations_eql:  114, pairs_eql:  16273000, swap_not_equal: 310
+SPINLOCK: size: 1000000, 8 s
+iterations_asc:  127, pairs_asc:  54397662, swap_asc: 155
+iterations_desc: 127, pairs_desc: 54473488, swap_desc: 168
+iterations_eql:  133, pairs_eql:  18985193, swap_not_equal: 355
+SPINLOCK: size: 1000000, 9 s
+iterations_asc:  143, pairs_asc:  61250674, swap_asc: 179
+iterations_desc: 144, pairs_desc: 61765414, swap_desc: 193
+iterations_eql:  149, pairs_eql:  21269179, swap_not_equal: 399
+SPINLOCK: size: 1000000, 10 s
+iterations_asc:  157, pairs_asc:  67246965, swap_asc: 205
+iterations_desc: 158, pairs_desc: 67770540, swap_desc: 209
+iterations_eql:  163, pairs_eql:  23267750, swap_not_equal: 439
