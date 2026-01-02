@@ -7,7 +7,6 @@
 
 #include "list.h"
 
-
 static atomic_long iterations_asc = 0;
 static atomic_long iterations_desc = 0;
 static atomic_long iterations_equal = 0;
@@ -39,7 +38,7 @@ static void search_pairs(Storage* s, int (*cmp)(int, int), atomic_long* global_c
         // One node in the storage
         if (!a) {
             pthread_mutex_unlock(&first->sync);
-            atomic_fetch_add(global_counter, 1);
+            atomic_fetch_add_explicit(global_counter, 1, memory_order_relaxed);
             continue;
         }
 
@@ -47,6 +46,7 @@ static void search_pairs(Storage* s, int (*cmp)(int, int), atomic_long* global_c
         pthread_mutex_lock(&a->sync);
         pthread_mutex_unlock(&first->sync);
 
+        int cycle_pairs = 0;
         while(a) {
             b = a->next;
             if (!b) {
@@ -58,24 +58,19 @@ static void search_pairs(Storage* s, int (*cmp)(int, int), atomic_long* global_c
             int len_a = (int)strlen(a->value);
             int len_b = (int)strlen(b->value);
             if (cmp(len_a, len_b))
-                atomic_fetch_add(pairs_counter, 1);
-            
+                ++cycle_pairs;
             pthread_mutex_unlock(&a->sync);
             a = b; // next step
         }
-        //pthread_mutex_unlock(&a->sync);
-        atomic_fetch_add(global_counter, 1);
+        if (cycle_pairs)
+            atomic_fetch_add_explicit(pairs_counter, cycle_pairs, memory_order_relaxed);
+        atomic_fetch_add_explicit(global_counter, 1, memory_order_relaxed);
     }
 }
 
-static int cmp_asc(int len_1, int len_2) { return len_1 > len_2; }
-static int cmp_desc(int len_1, int len_2) { return len_1 < len_2; }
+static int cmp_asc(int len_1, int len_2) { return len_1 < len_2; }
+static int cmp_desc(int len_1, int len_2) { return len_1 > len_2; }
 static int cmp_equal(int len_1, int len_2) { return len_1 == len_2; }
-static int cmp_not_equal(int len_1, int len_2) { // for swapper thread
-    //unsigned int seed = (unsigned int)time(NULL);
-    return len_1 != len_2; // return (rand_r(&seed) % 2 == 0); 
-                           //return 0;
-}
 
 /* Reading treads (find pairs) */
 
@@ -102,6 +97,10 @@ void* pair_searcher_equal(void* arg){
     search_pairs(s, cmp_equal, &iterations_equal, &pairs_equal);
     return NULL;
 }
+
+static int swap_asc_func(int len_1, int len_2) { return len_1 > len_2; }
+static int swap_desc_func(int len_1, int len_2) { return len_1 < len_2; }
+static int swap_not_equal_func(int len_1, int len_2) { return len_1 != len_2; }
 
 // PREV - L - R - NEXT => PREV - R - L - NEXT
 void swap_nodes(Node* prev, Node* node_left, Node* node_right) {
@@ -153,7 +152,7 @@ static void swap_pairs(Storage* s, int (*cmp)(int, int), atomic_long* swap_count
 
     if (cmp(len_left, len_right)){
         swap_nodes(prev, cur, next);
-        atomic_fetch_add(swap_counter, 1);
+        atomic_fetch_add_explicit(swap_counter, 1, memory_order_relaxed);
     }
     pthread_mutex_unlock(&next->sync);
     pthread_mutex_unlock(&cur->sync);
@@ -162,12 +161,13 @@ static void swap_pairs(Storage* s, int (*cmp)(int, int), atomic_long* swap_count
 
 /* Swap threads */
 
+
 void* swapper_asc(void* arg){
     unsigned int seed = (unsigned int)time(NULL) ^ (unsigned int)pthread_self();
     Storage* s = (Storage*)arg;
     if (s->size < 2)    return NULL;
     while(atomic_load(&is_running)) {
-        swap_pairs(s, cmp_asc, &swap_asc, &seed);
+        swap_pairs(s, swap_asc_func, &swap_asc, &seed);
     }
     return NULL;
 }
@@ -177,7 +177,7 @@ void* swapper_desc(void* arg){
     Storage* s = (Storage*)arg;
     if (s->size < 2)    return NULL;
     while(atomic_load(&is_running)) {
-        swap_pairs(s, cmp_desc, &swap_desc, &seed);
+        swap_pairs(s, swap_desc_func, &swap_desc, &seed);
     }
     return NULL;
 }
@@ -187,13 +187,33 @@ void* swapper_not_eql(void* arg){
     Storage* s = (Storage*)arg;
     if (s->size < 2)    return NULL;
     while(atomic_load(&is_running)) {
-        swap_pairs(s, cmp_not_equal, &swap_not_equal, &seed);
+        swap_pairs(s, swap_not_equal_func, &swap_not_equal, &seed);
     }
     return NULL;
 }
 
 void stop() {
     atomic_store(&is_running, 0);
+}
+
+/* Monitor thread */
+
+void print_result(int storage_size, int s) {
+    printf("MUTEX: size: %d, %d s\n", storage_size, s);
+    printf("iterations_asc:  %lu, pairs_asc:  %lu, swap_asc: %lu\n", atomic_load(&iterations_asc), atomic_load(&pairs_asc), atomic_load(&swap_asc));
+    printf("iterations_desc: %lu, pairs_desc: %lu, swap_desc: %lu\n", atomic_load(&iterations_desc), atomic_load(&pairs_desc), atomic_load(&swap_desc));
+    printf("iterations_eql:  %lu, pairs_eql:  %lu, swap_not_equal: %lu\n", atomic_load(&iterations_equal), atomic_load(&pairs_equal), atomic_load(&swap_not_equal));
+}
+
+void* monitor_func(void* arg) {
+    int size = *((int*)arg);
+    int iter = 1;
+    while (atomic_load(&is_running)) { 
+        sleep(1);
+        print_result(size, iter);
+        fflush(stdout);        
+        ++iter;
+    }
 }
 
 
@@ -209,6 +229,7 @@ int main(int argc, char **argv) {
 
     pthread_t searcher_asc, searcher_desc, searcher_eql;
     pthread_t pswapper_asc, pswapper_desc, pswapper_not_eql;
+    pthread_t monitor;
 
     pthread_create(&searcher_asc, NULL, pair_searcher_asc, s);
     pthread_create(&searcher_desc, NULL, pair_searcher_desc, s);
@@ -217,6 +238,8 @@ int main(int argc, char **argv) {
     pthread_create(&pswapper_asc, NULL, swapper_asc, s);
     pthread_create(&pswapper_desc, NULL, swapper_desc, s);
     pthread_create(&pswapper_not_eql, NULL, swapper_not_eql, s);
+
+    pthread_create(&monitor, NULL, monitor_func, &storage_size);
 
     sleep(10);
     stop(); //is_running == 0
@@ -229,10 +252,7 @@ int main(int argc, char **argv) {
     pthread_join(pswapper_desc, NULL);
     pthread_join(pswapper_not_eql, NULL);
 
-    printf("Mutex size: %d, 10 s\n", storage_size);
-    printf("iterations_asc:  %lu, pairs_asc:  %lu, swap_asc: %lu\n", iterations_asc, pairs_asc, swap_asc);
-    printf("iterations_desc: %lu, pairs_desc: %lu, swap_desc: %lu\n", iterations_desc, pairs_desc, swap_desc);
-    printf("iterations_eql:  %lu, pairs_eql:  %lu, swap_not_equal: %lu\n", iterations_equal, pairs_equal, swap_not_equal);
+    pthread_join(monitor, NULL);
 
     return 0;
 }

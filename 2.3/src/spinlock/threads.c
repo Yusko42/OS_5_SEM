@@ -1,4 +1,4 @@
-#include <pthread.h>
+/*#include <pthread.h>
 #include <stdio.h>
 #include <stdlib.h>
 #include <stdatomic.h>
@@ -19,11 +19,10 @@ static atomic_long swap_asc = 0;
 static atomic_long swap_desc = 0;
 static atomic_long swap_not_equal = 0;
 
-
 atomic_int is_running = 1;
-
+*/
 /* Main function for reading threads */
-
+/*
 static void search_pairs(Storage* s, int (*cmp)(int, int), atomic_long* global_counter, atomic_long* pairs_counter) {
     // One iteration of list traversal per cycle
     while(atomic_load(&is_running)) {
@@ -32,34 +31,34 @@ static void search_pairs(Storage* s, int (*cmp)(int, int), atomic_long* global_c
         Node* a;
         Node* b;
 
-        pthread_rwlock_rdlock(&first->sync);
+        pthread_spin_lock(&first->sync);
         a = first->next;
 
         // One node in the storage
         if (!a) {
-            pthread_rwlock_unlock(&first->sync);
-            atomic_fetch_add_explicit(global_counter, 1, memory_order_relaxed);
+            pthread_spin_unlock(&first->sync);
+            atomic_fetch_add(global_counter, 1);
             continue;
         }
 
         // If we do have 'a', the go to the next node 
-        pthread_rwlock_rdlock(&a->sync);
-        pthread_rwlock_unlock(&first->sync);
+        pthread_spin_lock(&a->sync);
+        pthread_spin_unlock(&first->sync);
 
         int cycle_pairs = 0;
         while(a) {
             b = a->next;
             if (!b) {
-                pthread_rwlock_unlock(&a->sync);
+                pthread_spin_unlock(&a->sync);
                 break;
             }
-            pthread_rwlock_rdlock(&b->sync);
+            pthread_spin_lock(&b->sync);
 
             int len_a = (int)strlen(a->value);
             int len_b = (int)strlen(b->value);
             if (cmp(len_a, len_b))
-                ++cycle_pairs;            
-            pthread_rwlock_unlock(&a->sync);
+                ++cycle_pairs;
+            pthread_spin_unlock(&a->sync);
             a = b; // next step
         }
         if (cycle_pairs)
@@ -71,12 +70,12 @@ static void search_pairs(Storage* s, int (*cmp)(int, int), atomic_long* global_c
 static int cmp_asc(int len_1, int len_2) { return len_1 < len_2; }
 static int cmp_desc(int len_1, int len_2) { return len_1 > len_2; }
 static int cmp_equal(int len_1, int len_2) { return len_1 == len_2; }
-
+*/
 /* Reading treads (find pairs) */
-
+/*
 void* pair_searcher_asc(void* arg){
     Storage* s = (Storage*)arg;
-    if (s->size < 2)
+        if (s->size < 2)
         return NULL;
     search_pairs(s, cmp_asc, &iterations_asc, &pairs_asc);
     return NULL;
@@ -92,7 +91,7 @@ void* pair_searcher_desc(void* arg){
 
 void* pair_searcher_equal(void* arg){
     Storage* s = (Storage*)arg;
-    if (s->size < 2)
+        if (s->size < 2)
         return NULL;
     search_pairs(s, cmp_equal, &iterations_equal, &pairs_equal);
     return NULL;
@@ -108,8 +107,9 @@ void swap_nodes(Node* prev, Node* node_left, Node* node_right) {
     node_left->next = node_right->next;
     node_right->next = node_left;
 }
-
+*/
 /* Main function for swapping threads */
+/*
 // Высчитываем индекс, шагаем туда, меняем
 static void swap_pairs(Storage* s, int (*cmp)(int, int), atomic_long* swap_counter, unsigned int* seed) {
     // случайный индекс
@@ -119,20 +119,20 @@ static void swap_pairs(Storage* s, int (*cmp)(int, int), atomic_long* swap_count
     Node* prev = s->first;
     if (!prev)          return;
 
-    pthread_rwlock_wrlock(&prev->sync);
+    pthread_spin_lock(&prev->sync);
     Node* cur = prev->next;
     if (!cur) {
-        pthread_rwlock_unlock(&prev->sync);
+        pthread_spin_unlock(&prev->sync);
         return;
     }
 
-    pthread_rwlock_wrlock(&cur->sync);
+    pthread_spin_lock(&cur->sync);
     // движемся по списку к левой ноде (cur = lft, next = right)
     for (int i = 0; i < left_index; i++){
         Node* next = cur->next;
         if (!next)          break;
-        pthread_rwlock_wrlock(&next->sync);
-        pthread_rwlock_unlock(&prev->sync);
+        pthread_spin_lock(&next->sync);
+        pthread_spin_unlock(&prev->sync);
 
         prev = cur;
         cur = next;
@@ -140,13 +140,13 @@ static void swap_pairs(Storage* s, int (*cmp)(int, int), atomic_long* swap_count
 
     Node* next = cur->next;
     if (!next) {
-        pthread_rwlock_unlock(&cur->sync);
-        pthread_rwlock_unlock(&prev->sync);
+        pthread_spin_unlock(&cur->sync);
+        pthread_spin_unlock(&prev->sync);
         return;
     }
 
     // Дошли: применяем алгоритм
-    pthread_rwlock_wrlock(&next->sync);
+    pthread_spin_lock(&next->sync);
     int len_left = strlen(cur->value);
     int len_right = strlen(next->value);
 
@@ -154,13 +154,13 @@ static void swap_pairs(Storage* s, int (*cmp)(int, int), atomic_long* swap_count
         swap_nodes(prev, cur, next);
         atomic_fetch_add_explicit(swap_counter, 1, memory_order_relaxed);
     }
-    pthread_rwlock_unlock(&next->sync);
-    pthread_rwlock_unlock(&cur->sync);
-    pthread_rwlock_unlock(&prev->sync);
+    pthread_spin_unlock(&next->sync);
+    pthread_spin_unlock(&cur->sync);
+    pthread_spin_unlock(&prev->sync);
 }
-
+*/
 /* Swap threads */
-
+/*
 void* swapper_asc(void* arg){
     unsigned int seed = (unsigned int)time(NULL) ^ (unsigned int)pthread_self();
     Storage* s = (Storage*)arg;
@@ -193,10 +193,10 @@ void* swapper_not_eql(void* arg){
 
 void stop() {
     atomic_store(&is_running, 0);
-}
+}*/
 
 /* Monitor thread */
-
+/*
 void print_result(int storage_size, int s) {
     printf("RWLOCK: size: %d, %d s\n", storage_size, s);
     printf("iterations_asc:  %lu, pairs_asc:  %lu, swap_asc: %lu\n", atomic_load(&iterations_asc), atomic_load(&pairs_asc), atomic_load(&swap_asc));
@@ -213,45 +213,4 @@ void* monitor_func(void* arg) {
         fflush(stdout);        
         ++iter;
     }
-}
-
-
-int main(int argc, char **argv) {
-    if (argc < 2) {
-        printf("no arg - list size\n");
-        return -1;
-    }
-    srand(time(NULL));
-
-    int storage_size = atoi(argv[1]);
-    Storage* s = storage_init(storage_size);
-
-    pthread_t searcher_asc, searcher_desc, searcher_eql;
-    pthread_t pswapper_asc, pswapper_desc, pswapper_not_eql;
-    pthread_t monitor;
-
-    pthread_create(&searcher_asc, NULL, pair_searcher_asc, s);
-    pthread_create(&searcher_desc, NULL, pair_searcher_desc, s);
-    pthread_create(&searcher_eql, NULL, pair_searcher_equal, s);
-
-    pthread_create(&pswapper_asc, NULL, swapper_asc, s);
-    pthread_create(&pswapper_desc, NULL, swapper_desc, s);
-    pthread_create(&pswapper_not_eql, NULL, swapper_not_eql, s);
-
-    pthread_create(&monitor, NULL, monitor_func, &storage_size);
-
-    sleep(10);
-    stop(); //is_running == 0
-
-    pthread_join(searcher_asc, NULL);
-    pthread_join(searcher_desc, NULL);
-    pthread_join(searcher_eql, NULL);
-
-    pthread_join(pswapper_asc, NULL);
-    pthread_join(pswapper_desc, NULL);
-    pthread_join(pswapper_not_eql, NULL);
-
-    pthread_join(monitor, NULL);
-
-    return 0;
-}
+}*/
