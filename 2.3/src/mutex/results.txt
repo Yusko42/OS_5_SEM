@@ -1,0 +1,164 @@
+MUTEX: size: 1000, 1 s
+iterations_asc:  9856, pairs_asc:  4210450, swap_asc: 10657
+iterations_desc: 9868, pairs_desc: 4221222, swap_desc: 10921
+iterations_eql:  9859, pairs_eql:  1420125, swap_not_equal: 21284
+MUTEX: size: 1000, 2 s
+iterations_asc:  22108, pairs_asc:  9427884, swap_asc: 24004
+iterations_desc: 22114, pairs_desc: 9453280, swap_desc: 24514
+iterations_eql:  22116, pairs_eql:  3208445, swap_not_equal: 47797
+MUTEX: size: 1000, 3 s
+iterations_asc:  35564, pairs_asc:  15134760, swap_asc: 37677
+iterations_desc: 35550, pairs_desc: 15176516, swap_desc: 38110
+iterations_eql:  35526, pairs_eql:  5205561, swap_not_equal: 76616
+MUTEX: size: 1000, 4 s
+iterations_asc:  48098, pairs_asc:  20441643, swap_asc: 51678
+iterations_desc: 48090, pairs_desc: 20532112, swap_desc: 52079
+iterations_eql:  48065, pairs_eql:  7067945, swap_not_equal: 103216
+MUTEX: size: 1000, 5 s
+iterations_asc:  59699, pairs_asc:  25392203, swap_asc: 64068
+iterations_desc: 59678, pairs_desc: 25455025, swap_desc: 64434
+iterations_eql:  59683, pairs_eql:  8780970, swap_not_equal: 128498
+MUTEX: size: 1000, 6 s
+iterations_asc:  71601, pairs_asc:  30478659, swap_asc: 77533
+iterations_desc: 71537, pairs_desc: 30547082, swap_desc: 78267
+iterations_eql:  71555, pairs_eql:  10469949, swap_not_equal: 156193
+MUTEX: size: 1000, 7 s
+iterations_asc:  83983, pairs_asc:  35805413, swap_asc: 91641
+iterations_desc: 83952, pairs_desc: 35835161, swap_desc: 91619
+iterations_eql:  83960, pairs_eql:  12241961, swap_not_equal: 182540
+MUTEX: size: 1000, 8 s
+iterations_asc:  96878, pairs_asc:  41261401, swap_asc: 105404
+iterations_desc: 96805, pairs_desc: 41274319, swap_desc: 105550
+iterations_eql:  96864, pairs_eql:  14212458, swap_not_equal: 209104
+MUTEX: size: 1000, 9 s
+iterations_asc:  109010, pairs_asc:  46447657, swap_asc: 119158
+iterations_desc: 108945, pairs_desc: 46471376, swap_desc: 119081
+iterations_eql:  109011, pairs_eql:  15954574, swap_not_equal: 235457
+MUTEX: size: 1000, 10 s
+iterations_asc:  120849, pairs_asc:  51462531, swap_asc: 131748
+iterations_desc: 120792, pairs_desc: 51541113, swap_desc: 132443
+iterations_eql:  120856, pairs_eql:  17701436, swap_not_equal: 262128
+
+
+MUTEX: size: 10000, 1 s
+iterations_asc:  1516, pairs_asc:  6445961, swap_asc: 1627
+iterations_desc: 1516, pairs_desc: 6453749, swap_desc: 1822
+iterations_eql:  1516, pairs_eql:  2258839, swap_not_equal: 3518
+MUTEX: size: 10000, 2 s
+iterations_asc:  3266, pairs_asc:  13882719, swap_asc: 3578
+iterations_desc: 3266, pairs_desc: 13950572, swap_desc: 3798
+iterations_eql:  3267, pairs_eql:  4824933, swap_not_equal: 7522
+MUTEX: size: 10000, 3 s
+iterations_asc:  4893, pairs_asc:  20816532, swap_asc: 5425
+iterations_desc: 4892, pairs_desc: 20935731, swap_desc: 5670
+iterations_eql:  4893, pairs_eql:  7168607, swap_not_equal: 11317
+MUTEX: size: 10000, 4 s
+iterations_asc:  6531, pairs_asc:  27777431, swap_asc: 7236
+iterations_desc: 6530, pairs_desc: 27934260, swap_desc: 7408
+iterations_eql:  6531, pairs_eql:  9587582, swap_not_equal: 15228
+MUTEX: size: 10000, 5 s
+iterations_asc:  8109, pairs_asc:  34528284, swap_asc: 9123
+iterations_desc: 8109, pairs_desc: 34679423, swap_desc: 9361
+iterations_eql:  8109, pairs_eql:  11874300, swap_not_equal: 18969
+MUTEX: size: 10000, 6 s
+iterations_asc:  9818, pairs_asc:  41883963, swap_asc: 11125
+iterations_desc: 9818, pairs_desc: 42007170, swap_desc: 11244
+iterations_eql:  9819, pairs_eql:  14280474, swap_not_equal: 22739
+MUTEX: size: 10000, 7 s
+iterations_asc:  11531, pairs_asc:  49235793, swap_asc: 13026
+iterations_desc: 11531, pairs_desc: 49335244, swap_desc: 13076
+iterations_eql:  11531, pairs_eql:  16727383, swap_not_equal: 26603
+MUTEX: size: 10000, 8 s
+iterations_asc:  13160, pairs_asc:  56254096, swap_asc: 14899
+iterations_desc: 13160, pairs_desc: 56359109, swap_desc: 14977
+iterations_eql:  13160, pairs_eql:  18973630, swap_not_equal: 30360
+MUTEX: size: 10000, 9 s
+iterations_asc:  14835, pairs_asc:  63429254, swap_asc: 16793
+iterations_desc: 14834, pairs_desc: 63578910, swap_desc: 16947
+iterations_eql:  14834, pairs_eql:  21321267, swap_not_equal: 34218
+MUTEX: size: 10000, 10 s
+iterations_asc:  16471, pairs_asc:  70432359, swap_asc: 18704
+iterations_desc: 16470, pairs_desc: 70571321, swap_desc: 18801
+iterations_eql:  16471, pairs_eql:  23685663, swap_not_equal: 38337
+
+MUTEX: size: 100000, 1 s
+iterations_asc:  169, pairs_asc:  7221750, swap_asc: 200
+iterations_desc: 169, pairs_desc: 7252634, swap_desc: 193
+iterations_eql:  168, pairs_eql:  2411080, swap_not_equal: 361
+MUTEX: size: 100000, 2 s
+iterations_asc:  333, pairs_asc:  14232049, swap_asc: 400
+iterations_desc: 333, pairs_desc: 14290433, swap_desc: 374
+iterations_eql:  333, pairs_eql:  4777166, swap_not_equal: 728
+MUTEX: size: 100000, 3 s
+iterations_asc:  493, pairs_asc:  21072567, swap_asc: 594
+iterations_desc: 493, pairs_desc: 21153883, swap_desc: 551
+iterations_eql:  493, pairs_eql:  7073049, swap_not_equal: 1064
+MUTEX: size: 100000, 4 s
+iterations_asc:  644, pairs_asc:  27532859, swap_asc: 771
+iterations_desc: 645, pairs_desc: 27671654, swap_desc: 713
+iterations_eql:  644, pairs_eql:  9237710, swap_not_equal: 1427
+MUTEX: size: 100000, 5 s
+iterations_asc:  787, pairs_asc:  33651570, swap_asc: 945
+iterations_desc: 788, pairs_desc: 33805912, swap_desc: 908
+iterations_eql:  787, pairs_eql:  11284601, swap_not_equal: 1756
+MUTEX: size: 100000, 6 s
+iterations_asc:  958, pairs_asc:  40967348, swap_asc: 1127
+iterations_desc: 959, pairs_desc: 41140683, swap_desc: 1080
+iterations_eql:  957, pairs_eql:  13719559, swap_not_equal: 2115
+MUTEX: size: 100000, 7 s
+iterations_asc:  1121, pairs_asc:  47943904, swap_asc: 1330
+iterations_desc: 1122, pairs_desc: 48127114, swap_desc: 1251
+iterations_eql:  1121, pairs_eql:  16070736, swap_not_equal: 2505
+MUTEX: size: 100000, 8 s
+iterations_asc:  1273, pairs_asc:  54450899, swap_asc: 1535
+iterations_desc: 1273, pairs_desc: 54595650, swap_desc: 1429
+iterations_eql:  1272, pairs_eql:  18237874, swap_not_equal: 2831
+MUTEX: size: 100000, 9 s
+iterations_asc:  1423, pairs_asc:  60871483, swap_asc: 1727
+iterations_desc: 1424, pairs_desc: 61067318, swap_desc: 1618
+iterations_eql:  1422, pairs_eql:  20388320, swap_not_equal: 3173
+MUTEX: size: 100000, 10 s
+iterations_asc:  1575, pairs_asc:  67374833, swap_asc: 1915
+iterations_desc: 1576, pairs_desc: 67581905, swap_desc: 1793
+iterations_eql:  1574, pairs_eql:  22570228, swap_not_equal: 3567
+
+MUTEX: size: 1000000, 1 s
+iterations_asc:  18, pairs_asc:  7706960, swap_asc: 15
+iterations_desc: 19, pairs_desc: 8154480, swap_desc: 13
+iterations_eql:  18, pairs_eql:  2567730, swap_not_equal: 45
+MUTEX: size: 1000000, 2 s
+iterations_asc:  35, pairs_asc:  14985817, swap_asc: 35
+iterations_desc: 34, pairs_desc: 14592145, swap_desc: 32
+iterations_eql:  34, pairs_eql:  4850185, swap_not_equal: 78
+MUTEX: size: 1000000, 3 s
+iterations_asc:  51, pairs_asc:  21836591, swap_asc: 53
+iterations_desc: 50, pairs_desc: 21458901, swap_desc: 41
+iterations_eql:  50, pairs_eql:  7132641, swap_not_equal: 111
+MUTEX: size: 1000000, 4 s
+iterations_asc:  67, pairs_asc:  28687303, swap_asc: 70
+iterations_desc: 67, pairs_desc: 28754817, swap_desc: 61
+iterations_eql:  66, pairs_eql:  9415169, swap_not_equal: 141
+MUTEX: size: 1000000, 5 s
+iterations_asc:  82, pairs_asc:  35109743, swap_asc: 89
+iterations_desc: 82, pairs_desc: 35192518, swap_desc: 77
+iterations_eql:  81, pairs_eql:  11555014, swap_not_equal: 173
+MUTEX: size: 1000000, 6 s
+iterations_asc:  98, pairs_asc:  41960234, swap_asc: 104
+iterations_desc: 97, pairs_desc: 41630258, swap_desc: 96
+iterations_eql:  96, pairs_eql:  13694921, swap_not_equal: 204
+MUTEX: size: 1000000, 7 s
+iterations_asc:  113, pairs_asc:  48382616, swap_asc: 124
+iterations_desc: 113, pairs_desc: 48497192, swap_desc: 117
+iterations_eql:  112, pairs_eql:  15977435, swap_not_equal: 237
+MUTEX: size: 1000000, 8 s
+iterations_asc:  129, pairs_asc:  55233176, swap_asc: 145
+iterations_desc: 129, pairs_desc: 55364089, swap_desc: 130
+iterations_eql:  127, pairs_eql:  18117304, swap_not_equal: 268
+MUTEX: size: 1000000, 9 s
+iterations_asc:  144, pairs_asc:  61655634, swap_asc: 160
+iterations_desc: 145, pairs_desc: 62230856, swap_desc: 147
+iterations_eql:  143, pairs_eql:  20399899, swap_not_equal: 302
+MUTEX: size: 1000000, 10 s
+iterations_asc:  160, pairs_asc:  68506462, swap_asc: 176
+iterations_desc: 161, pairs_desc: 69097645, swap_desc: 168
+iterations_eql:  159, pairs_eql:  22682258, swap_not_equal: 330
