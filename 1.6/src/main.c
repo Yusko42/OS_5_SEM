@@ -101,6 +101,107 @@ int test_join() {
 	return 0;
 }
 
+int test_multiple_detach() {
+    mythread_t *t;
+    int err = mythread_create(&t, mythread_2, NULL);
+    if (err) {
+        printf("mythread_create() failed: %s\n", strerror(errno));
+        return -1;
+    }
+
+    err = mythread_detach(t);
+    if (err) {
+        printf("mythread_detach() failed (1): %s\n", strerror(errno));
+        return -1;
+    }
+
+    // Повторный detach не должен падать
+    err = mythread_detach(t);
+    if (err) {
+        printf("mythread_detach() failed (2): %s\n", strerror(errno));
+        return -1;
+    }
+
+    printf("test_multiple_detach OK\n");
+    return 0;
+}
+
+int test_detach_long_running() {
+    mythread_t *t;
+    int err = mythread_create(&t, mythread_2, NULL);
+    if (err) {
+        printf("mythread_create() failed: %s\n", strerror(errno));
+        return -1;
+    }
+
+    err = mythread_detach(t);
+    if (err) {
+        printf("mythread_detach() failed: %s\n", strerror(errno));
+        return -1;
+    }
+
+    // Дадим reaper'у время поработать
+    sleep(1);
+
+    printf("test_detach_long_running OK\n");
+    return 0;
+}
+
+void *fast_exit(void *arg) {
+    return NULL;
+}
+
+int test_race_detach_vs_exit() {
+    mythread_t *t;
+    int err = mythread_create(&t, fast_exit, NULL);
+    if (err) {
+        printf("mythread_create() failed: %s\n", strerror(errno));
+        return -1;
+    }
+
+    // Пытаемся поймать момент между запуском и exit
+    for (int i = 0; i < 1000; i++) {
+        err = mythread_detach(t);
+        if (err && errno != EINVAL) {
+            printf("unexpected error in detach: %s\n", strerror(errno));
+            return -1;
+        }
+    }
+
+    sleep(1);
+    printf("test_race_detach_vs_exit OK\n");
+    return 0;
+}
+
+int test_detach_then_join_fails() {
+    mythread_t *t;
+    int err = mythread_create(&t, mythread_2, NULL);
+    if (err) {
+        printf("mythread_create() failed: %s\n", strerror(errno));
+        return -1;
+    }
+
+    err = mythread_detach(t);
+    if (err) {
+        printf("mythread_detach() failed: %s\n", strerror(errno));
+        return -1;
+    }
+
+    void *res;
+    err = mythread_join(t, &res);
+    if (err == 0) {
+        printf("ERROR: join succeeded on detached thread\n");
+        return -1;
+    }
+
+    if (errno != EINVAL) {
+        printf("ERROR: wrong errno on join after detach: %s\n", strerror(errno));
+        return -1;
+    }
+
+    printf("test_detach_then_join_fails OK\n");
+    return 0;
+}
 int main() {
 	if (test_join()) {printf("main: test_join() failed.\n"); return -1;};
 	sleep(3);
@@ -108,5 +209,12 @@ int main() {
 	sleep(5);
 	if (test_detach_after_exit()) {printf("main: test_detach_after_exit() failed.\n"); return -1;}
 	sleep(5);
+
+    if (test_multiple_detach()) return -1;
+    if (test_detach_long_running()) return -1;
+    if (test_race_detach_vs_exit()) return -1;
+    if (test_detach_then_join_fails()) return -1;
+
+    printf("ALL TESTS PASSED\n");
 	return 0;
 }
