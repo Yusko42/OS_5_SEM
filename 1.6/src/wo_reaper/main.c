@@ -202,18 +202,45 @@ int test_detach_then_join_fails() {
     printf("test_detach_then_join_fails OK\n");
     return 0;
 }
+
+int test_many_detached_threads() {
+    const int N = 50;
+    mythread_t *threads[N];
+
+    for (int i = 0; i < N; i++) {
+        int err = mythread_create(&threads[i], mythread_2, NULL);
+        if (err) {
+            printf("mythread_create failed at %d: %s\n", i, strerror(errno));
+            return -1;
+        }
+
+        err = mythread_detach(threads[i]);
+        if (err) {
+            printf("mythread_detach failed at %d: %s\n", i, strerror(errno));
+            return -1;
+        }
+    }
+
+    // Ждём, пока все должны быть собраны
+    sleep(2);
+
+    printf("test_many_detached_threads OK\n");
+    return 0;
+}
+
 int main() {
 	if (test_join()) {printf("main: test_join() failed.\n"); return -1;};
 	sleep(3);
 	if (test_detach_before_exit()) {printf("main: test_detach_before_exit() failed.\n"); return -1;};
-	sleep(5);
+	sleep(3);
 	if (test_detach_after_exit()) {printf("main: test_detach_after_exit() failed.\n"); return -1;}
-	sleep(5);
+	sleep(3);
 
     if (test_multiple_detach()) return -1;
     if (test_detach_long_running()) return -1;
     if (test_race_detach_vs_exit()) return -1;
     if (test_detach_then_join_fails()) return -1;
+    if (test_many_detached_threads()) return -1;
 
     printf("ALL TESTS PASSED\n");
 	return 0;
